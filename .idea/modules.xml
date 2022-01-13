@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/10Day_CollectonFW/10Day_CollectonFW.iml" filepath="$PROJECT_DIR$/10Day_CollectonFW/10Day_CollectonFW.iml" />
+      <module fileurl="file://$PROJECT_DIR$/10Day_IOstream/10Day_IOstream.iml" filepath="$PROJECT_DIR$/10Day_IOstream/10Day_IOstream.iml" />
       <module fileurl="file://$PROJECT_DIR$/5Day_object/5Day_object.iml" filepath="$PROJECT_DIR$/5Day_object/5Day_object.iml" />
       <module fileurl="file://$PROJECT_DIR$/6Day_CarCompare/6Day_CarCompare.iml" filepath="$PROJECT_DIR$/6Day_CarCompare/6Day_CarCompare.iml" />
       <module fileurl="file://$PROJECT_DIR$/7Day_Array/7Day_Array.iml" filepath="$PROJECT_DIR$/7Day_Array/7Day_Array.iml" />
