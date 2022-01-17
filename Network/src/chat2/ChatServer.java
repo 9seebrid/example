@@ -1,4 +1,4 @@
-package chat;
+package chat2;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,36 +30,27 @@ public class ChatServer {
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
 
-            while(true){
+            //receive
+            Thread receiveT = new Thread(new ChatServerReceive(socket));
 
-                System.out.print("입력 >>");
-                String sendMsg = sc.nextLine();
+            //send
+            Thread sendT = new Thread(new ChatServerSend(socket));
 
-                dos.writeUTF(sendMsg);
-                dos.flush();
-
-                String receiveMsg = dis.readUTF();
-
-                if(receiveMsg.equalsIgnoreCase("bye")){//비교문자가 대소문자 구분없이 비교
-                    System.out.println("클라이언트 접속 종료");
-                    break;
-                }
-                System.out.println("출력 >> " + receiveMsg);
-
-            }
+            receiveT.start();
+            sendT.start();
 
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                dis.close();
-                dos.close();
-                socket.close();
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                dis.close();
+//                dos.close();
+//                socket.close();
+//                serverSocket.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
         }
 
