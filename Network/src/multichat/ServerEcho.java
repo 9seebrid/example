@@ -37,19 +37,18 @@ public class ServerEcho implements Runnable{
 
                     }
                 }
-
             }
 
         } catch (IOException e) {
+            Server.list.remove(socket);
             e.printStackTrace();
         } finally {
-            try {
-                dos.close();
-                dis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-}
+//            try {
+//                dos.close();
+//                dis.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        } //finally 종료
+    } // run 메소드 종료
+}//class 종료
