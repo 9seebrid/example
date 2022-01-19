@@ -31,6 +31,17 @@ public class Client {
             oos.writeObject(vo);
             oos.flush();
 
+            MessageVO mvo = new MessageVO();
+            mvo.setNo(1);
+            mvo.setSendName("sender");
+            mvo.setReceiveName("receiver");
+            mvo.setMessage("hi");
+
+            oos.writeObject(mvo);
+            oos.flush();
+
+            oos.close();
+
 
         } catch (IOException e) {
             e.printStackTrace();
