@@ -11,7 +11,7 @@ public class Client {
 //        DataOutputStream dos = null; 하나씩 구분해서 보내야 하기 때문에 안씀
         ObjectOutputStream oos = null;
         try {
-            socket = new Socket("localhost",7777);
+            socket = new Socket("192.168.0.6",7777);
             System.out.println("서버 접속 완료");
 
             //로그인 화면

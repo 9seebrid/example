@@ -23,6 +23,7 @@ import model.Member;
 import vo.MemberVO;
 
 public class JoinFrame extends JFrame {
+
     MemberVO mvo = new MemberVO();
     ObjectOutputStream oos = null;
     static Socket socket = null;
