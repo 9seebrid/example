@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/10Day_CollectonFW/10Day_CollectonFW.iml" filepath="$PROJECT_DIR$/10Day_CollectonFW/10Day_CollectonFW.iml" />
       <module fileurl="file://$PROJECT_DIR$/10Day_IOstream/10Day_IOstream.iml" filepath="$PROJECT_DIR$/10Day_IOstream/10Day_IOstream.iml" />
+      <module fileurl="file://$PROJECT_DIR$/13Day_MiniProject/13Day_MiniProject.iml" filepath="$PROJECT_DIR$/13Day_MiniProject/13Day_MiniProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/5Day_object/5Day_object.iml" filepath="$PROJECT_DIR$/5Day_object/5Day_object.iml" />
       <module fileurl="file://$PROJECT_DIR$/6Day_CarCompare/6Day_CarCompare.iml" filepath="$PROJECT_DIR$/6Day_CarCompare/6Day_CarCompare.iml" />
       <module fileurl="file://$PROJECT_DIR$/7Day_Array/7Day_Array.iml" filepath="$PROJECT_DIR$/7Day_Array/7Day_Array.iml" />
@@ -13,7 +14,11 @@
       <module fileurl="file://$PROJECT_DIR$/8Day_Car/8Day_car.iml" filepath="$PROJECT_DIR$/8Day_Car/8Day_car.iml" />
       <module fileurl="file://$PROJECT_DIR$/8Day_interface/8Day_interface.iml" filepath="$PROJECT_DIR$/8Day_interface/8Day_interface.iml" />
       <module fileurl="file://$PROJECT_DIR$/9Day_jdbc/9Day_jdbc.iml" filepath="$PROJECT_DIR$/9Day_jdbc/9Day_jdbc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Socket/Socket.iml" filepath="$PROJECT_DIR$/Socket/Socket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Mini/Mini.iml" filepath="$PROJECT_DIR$/Mini/Mini.iml" />
+      <module fileurl="file://$PROJECT_DIR$/project/Project.iml" filepath="$PROJECT_DIR$/project/Project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Network/Socket.iml" filepath="$PROJECT_DIR$/Network/Socket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Test/Test.iml" filepath="$PROJECT_DIR$/Test/Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Thread/Thread.iml" filepath="$PROJECT_DIR$/Thread/Thread.iml" />
       <module fileurl="file://$PROJECT_DIR$/3Day/Three.iml" filepath="$PROJECT_DIR$/3Day/Three.iml" />
       <module fileurl="file://$PROJECT_DIR$/example_test/example_test.iml" filepath="$PROJECT_DIR$/example_test/example_test.iml" />
       <module fileurl="file://$PROJECT_DIR$/1Day/one.iml" filepath="$PROJECT_DIR$/1Day/one.iml" />

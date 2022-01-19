@@ -22,7 +22,7 @@ public class Client {
 //            String id = sc.nextLine();
 
             //소켓 생성
-            socket = new Socket("192.168.0.106",7777); //서버 접속 완료
+            socket = new Socket("192.168.0.6",7777); //서버 접속 완료
 
             System.out.println("서버 접속 완료");
 

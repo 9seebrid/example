@@ -18,10 +18,25 @@ public class Server {
             System.out.println("클라이언트 접속 완료");
 
             ois = new ObjectInputStream(socket.getInputStream());
-            LoginVO vo = (LoginVO)ois.readObject();
 
-            System.out.println(vo.getId());
-            System.out.println(vo.getPwd());
+            while (true) {
+                Object obj = ois.readObject();
+
+                if (obj instanceof LoginVO) { //instanceof 객체 비교 명령어
+                    LoginVO vo = (LoginVO) obj; //login
+                    System.out.println(vo.getId());
+                    System.out.println(vo.getPwd());
+                } else if (obj instanceof MessageVO) {
+                    MessageVO vo = (MessageVO) obj; //Message
+
+                    System.out.println(vo.getNo());
+                    System.out.println(vo.getSendName());
+                    System.out.println(vo.getReceiveName());
+                    System.out.println(vo.getMessage());
+
+                }
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
