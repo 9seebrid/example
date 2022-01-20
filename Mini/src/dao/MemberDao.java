@@ -1,102 +1,209 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
-import model.Member;
+import vo.ChatVO;
+import vo.MemberVO;
 
 public class MemberDao {
-    private MemberDao() {}
-    private static MemberDao instance=new MemberDao();
-    public static MemberDao getInstance() {
-        return instance;
-    }
 
-    private Connection conn; //DB 연결 객체
-    private PreparedStatement pstmt; //Query 작성 객체
-    private ResultSet rs; //Query 결과 커서
-
-    //성공 1, 실패 -1, 없음 0
-    public int findByUsernameAndPassword(String username, String password) {
-        //1. DB 연결
-        conn = DBConnection.getConnection();
+    private Connection jdbcInit() {
+        Connection conn = null;
 
         try {
-            //2. Query 작성
-            pstmt = conn.prepareStatement("select * from member where username = ? and password = ?");
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "DB", "mini");
+            System.out.println("Connection 생성 여부 확인 : " + conn);
+            //getConnection 매개변수에 들어가야할 내용
+            //Oracle 접속주소, 계정 암호
+        } catch (ClassNotFoundException e) {
+            try {
+                conn.close();
 
-            //3. Query ? 완성 (index 1번 부터 시작)
-            //setString, setInt, setDouble, setTimeStamp 등이 있음.
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            //4. Query 실행
-            //(1) executeQuery() = select = ResultSet 리턴
-            //(2) executeUpdate() = insert, update, delete = 리턴 없음.
-            rs = pstmt.executeQuery();
-
-            //5. rs는 query한 결과의 첫번째 행(레코드) 직전에 대기중
-            //결과가 count(*) 그룹함수이기 때문에 1개의 행이 리턴됨. while문이 필요 없음.
-            if(rs.next()) { //next()함수는 커서를 한칸 내리면서 해당 행에 데이터가 있으면 true, 없으면 false 반환
-                //결과가 있다는 것은 해당 아이디와 비번에 매칭되는 값이 있다는 뜻.
-                return 1; //로그인 성공
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
+            e.printStackTrace();
+        } catch (SQLException sqle) {
+            try {
+                conn.close();
+
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            sqle.printStackTrace();
+        }
+        return conn;
+    } // jdbcInit() 메소드 종료문
+
+    //Member정보 Insert하기
+    public int insertMember(MemberVO mv) {
+
+        PreparedStatement pstmt = null;
+        Connection conn = jdbcInit();
+
+        String sql = "INSERT INTO member(id, pw, name, email, nickname, profile) VALUES(?, ?, ?, ?, ?, ?)";
+
+        int result_cnt=0;
+
+        try {
+            pstmt.getConnection().prepareStatement(sql);
+            pstmt.setString(1, mv.getId());
+            pstmt.setString(2, mv.getPw());
+            pstmt.setString(3, mv.getName());
+            pstmt.setString(4, mv.getEmail());
+            pstmt.setString(5, mv.getNickname());
+            pstmt.setString(6, mv.getProfile());
+            result_cnt = pstmt.executeUpdate();
+
         } catch (SQLException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        } finally {
 
-        return -1; //로그인 실패
-    }
-
-    //성공 1, 실패 -1,
-    public int save(Member member) {
-        conn = DBConnection.getConnection();
-
-        try {
-            pstmt = conn.prepareStatement("insert into member values(member_seq.nextval, ?,?,?,?,?, sysdate)");
-            pstmt.setString(1, member.getUsername());
-            pstmt.setString(2, member.getPassword());
-            pstmt.setString(3, member.getName());
-            pstmt.setString(4, member.getEmail());
-            pstmt.setString(5, member.getPhone());
-            pstmt.executeUpdate(); //return값은 처리된 레코드의 개수
-            return 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    //성공 Vector<Member>, 실패 null
-    public Vector<Member> findByAll(){
-        conn = DBConnection.getConnection();
-        Vector<Member> members = new Vector<>();
-        try {
-            pstmt = conn.prepareStatement("select * from member");
-            rs = pstmt.executeQuery();
-            while(rs.next()) {
-                Member member = new Member();
-                member.setId(rs.getLong("id"));
-                member.setUsername(rs.getString("username"));
-                member.setPassword(rs.getString("password"));
-                member.setName(rs.getString("name"));
-                member.setEmail(rs.getString("email"));
-                member.setPhone(rs.getString("phone"));
-                member.setCreateDate(rs.getTimestamp("createDate"));
-                members.add(member);
+            try {
+                pstmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-            return members;
+        }//finally 종료
+        return result_cnt;
 
-        } catch (Exception e) {
+    }//insertMember() 종료
+
+    public List<MemberVO> getAllMember() {
+
+        Connection conn = null;
+        conn = jdbcInit();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT id, pw, name, email, nickname, profile FROM member";
+        List<MemberVO> list = new ArrayList<MemberVO>();
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                MemberVO mv = new MemberVO();
+
+                mv.setId(rs.getString(1));
+                mv.setPw(rs.getString(2));
+                mv.setName(rs.getString(3));
+                mv.setEmail(rs.getString(4));
+                mv.setNickname(rs.getString(5));
+                mv.setProfile(rs.getString(6));
+
+                list.add(mv);
+
+            }//while 종료지점
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        } finally {
 
-        return null;
-    }
+            try {
+                rs.close();
+                pstmt.close();
+                conn.close();
+
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }//finally 종료 지점
+        return list;
+
+
+    }//getAllMember() 종료
+
+    public int getLoginInfo() {
+        Connection conn = null;
+        conn = jdbcInit();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT COUNT(*) FROM member WHERE id = ?, pw = ?";
+        MemberVO mv = new MemberVO();
+
+        int resultCount = 0;
+        int result_login = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+
+            rs = pstmt.executeQuery();
+
+            if(rs.next()) {
+
+                resultCount = rs.getInt(1);
+
+            }//if 종료지점
+
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                pstmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }//finally 종료지점
+        return result_login;
+
+    }//getLoginInfo() 종료 지점
+
+    public int idCheck() {
+
+        Connection conn = null;
+        conn = jdbcInit();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT COUNT(*) FROM member WHERE id = ?";
+        MemberVO mv = new MemberVO();
+
+        int resultCount = 0;
+        int result_idchk = 0;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+
+                resultCount = rs.getInt(1);
+            }//if종료 지점
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                pstmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }//finally 종료 지점
+        return result_idchk;
+
+    }//idCheck() 종료 지점
 
 }
-
-

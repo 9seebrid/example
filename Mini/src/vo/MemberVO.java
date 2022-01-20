@@ -1,10 +1,5 @@
 package vo;
 
-import dao.MemberDao;
-import model.Member;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
 
 public class MemberVO implements Serializable {

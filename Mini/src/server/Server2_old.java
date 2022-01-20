@@ -6,9 +6,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import vo.MemberVO;
-
-public class Server {
+public class Server2_old {
 
     public static Map<String, Socket> list = new HashMap<String, Socket>();
 
@@ -28,11 +26,6 @@ public class Server {
 
                 socket = serverSocket.accept();
                 System.out.println("서버 접속 완료");
-
-                Thread t = new Thread(new ServerEcho(socket));
-                t.start();
-
-
 
             }//while 종료 지점
         } catch (IOException e) {

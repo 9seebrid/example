@@ -1,54 +1,40 @@
 package gui;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import dao.MemberDao;
+import host.Host;
+import vo.ClientVO;
 import vo.MemberVO;
 
 public class LoginFrame extends JFrame {
     MemberVO mvo = new MemberVO();
     ObjectOutputStream oos = null;
-    static Socket socket = null;
+    ObjectInputStream ois = null;
+    DataInputStream dis = null;
+    DataOutputStream dos = null;
+
+    Host host = new Host(); // 생성자 초기화
+    Socket socket = host.socket(); //Host 소켓을 로그인으로 불러옴
+
 
     private JPanel contentPane;
-    private JTextField tfUsername, tfPassword;
+    private JTextField tfUsername;
+    private JPasswordField tfPassword;
     private JButton loginBtn, joinBtn;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        try {
-            socket = new Socket("192.168.0.106",7777);
-            System.out.println("서버 접속");
-
-            LoginFrame frame = new LoginFrame();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * Create the frame.
      */
     public LoginFrame() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
         contentPane = new JPanel();
@@ -77,10 +63,24 @@ public class LoginFrame extends JFrame {
         loginBtn.setBounds(108, 154, 106, 29);
         contentPane.add(loginBtn);
 
-        tfPassword = new JTextField();
+        tfPassword = new JPasswordField("");
         tfPassword.setColumns(10);
         tfPassword.setBounds(157, 103, 176, 35);
         contentPane.add(tfPassword);
+
+        ClientVO cvo = new ClientVO(); //클라이언트 VO 선언
+
+        try {
+            cvo.setSocket(socket);
+            cvo.setDis(new DataInputStream(socket.getInputStream()));
+            cvo.setDos(new DataOutputStream(socket.getOutputStream()));
+            cvo.setOos(new ObjectOutputStream(socket.getOutputStream()));
+//            cvo.setOis(new ObjectInputStream(socket.getInputStream()));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         setVisible(true);
         //회원가입 액션
@@ -88,29 +88,45 @@ public class LoginFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JoinFrame frame = new JoinFrame();
+                JoinFrame frame = new JoinFrame(cvo);
+//                frame.setSocket(socket);
             }
         });
 
         //로그인 액션
-        loginBtn.addActionListener(new ActionListener() {
-            ObjectOutputStream oos = null;
+        loginBtn.addActionListener(new ActionListener() { // 로그인 버튼 눌렀을 때 서버로 ID, PW 보내기
+//            ObjectOutputStream oos = null;
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-            String username = tfUsername.getText();
-            String password = tfPassword.getText();
+                String username = tfUsername.getText();
+                String password = tfPassword.getText();
 
-            MemberVO mvo = new MemberVO();
+
+                MemberVO mvo = new MemberVO();
+
+                mvo.setCode(2);
+                mvo.setId(username);
+                mvo.setPw(password);
+
                 try {
-                    mvo.setCode(2);
-                    mvo.setId(tfUsername.getText());
-                    mvo.setPw(tfPassword.getText());
+                    cvo.getOos().writeObject(mvo);
+                    cvo.getOos().flush();
 
-                    oos = new ObjectOutputStream(socket.getOutputStream());
-                    oos.writeObject(mvo);
-                    oos.flush();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } // 서버로 정보 보내기 끝
+
+                try {
+                    String code = cvo.getDis().readUTF();
+                    System.out.println(code);
+
+                    if(code.equals("S")){
+                        JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
+                    }else if(code.equals("F")){
+                        JOptionPane.showMessageDialog(null, "로그인에 실패하였습니다.");
+                    }
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -118,8 +134,10 @@ public class LoginFrame extends JFrame {
 
 
             }
-        });
-    }
+
+            });
+        }
+
 }
 
 
